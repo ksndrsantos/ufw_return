@@ -1,0 +1,24 @@
+---
+- name: Rollback Firewall Changes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Disable UFW
+      ufw:
+        state: disabled
+
+    - name: Reset UFW to default (Allow all)
+      ufw:
+        state: reset
+      # This clears all custom rules you just added
+
+    - name: Set Default Policy back to Allow (Standard for fresh VMs)
+      ufw:
+        direction: incoming
+        policy: allow
+
+    - name: Remove UFW package
+      apt:
+        name: ufw
+        state: absent
+        purge: yes
